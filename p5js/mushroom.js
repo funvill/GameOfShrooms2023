@@ -30,37 +30,7 @@ function randomSeedMinMax(seed, min, max) {
 
 
 
-// Use the random number to change the characteristics of the mushroom
-var mushroomSetting = {
-  cap: {
-    width: randomSeedMinMax(seed, 4, 6) * ONE_CM,     // Bottom circle width
-    height: randomSeedMinMax(seed, 1.5, 3) * ONE_CM,  // Bottom circle height
-    tall: randomSeedMinMax(seed, 3, 5.5) * ONE_CM,    // How tall the mushroom is
-    tilt: randomSeedMinMax(seed, -5, 5) * ONE_MM,     // How much the mushroom cap is tilted right or left
-    squash: randomSeedMinMax(seed, 1, 10),            // 1 is pointy, 10 is round
-    ringMargin: randomSeedMinMax(seed, 2, 4) * ONE_MM,                           // How far the ring is from the edge of the mushroom cap
-    dots: {
-      count: randomSeedMinMax(seed, 10, 20),      // Not used yet
-      sizeMin: randomSeedMinMax(seed, 3, 7) * ONE_MM,
-      sizeMax: randomSeedMinMax(seed, 7, 10) * ONE_MM,
-    }
-  },
-  stem: {
-    tilt: randomSeedMinMax(seed, -10, 10) * ONE_MM,
-    height: randomSeedMinMax(seed, 2, 6) * ONE_CM,
-    width: randomSeedMinMax(seed, 10, 25) / 10 * ONE_CM,
-    direction: randomSeedMinMax(seed, -1, 1) >= 0 ? 1 : -1,
-    variance: randomSeedMinMax(seed, 4, 25) * ONE_MM // Vary the X axis by a random amount  
-  },
-  gills: {
-    count: randomSeedMinMax(seed, 20, 30),
-    direction: randomSeedMinMax(seed, -1, 1), // -1 = right, 0 left
-    curveAmount: randomSeedMinMax(seed, 3, 10),
-  }
-}
-if (mushroomSetting.gills.direction >= 0) mushroomSetting.gills.direction = 1; // We don't want strait gills
 
-console.log(mushroomSetting);
 
 
 function DrawMushroomCap(x, y, mushroom, outline = false, debug = false) {
@@ -365,27 +335,147 @@ function DrawMushroomCapDots(x, y, mushroom) {
   // console.log("count:" + mushroom.cap.dots.count);
 }
 
+var gui;
+var cap_width = 0 ;
+var cap_height = 0 ;
+var cap_tall = 0 ;
+var cap_tilt = 0 ;
+var cap_squash = 0 ;
+var cap_ringMargin = 0 ;
+var stem_height = 0 ;
+var stem_width = 0 ;
+var stem_direction = 0 ;
+var stem_variance = 0 ;
+var gills_count = 0 ;
+var gills_direction = 0 ;
+var gills_curveAmount = 0 ;
+
+
+// Use the random number to change the characteristics of the mushroom
+var mushroomSetting = {
+  cap: {
+    width: randomSeedMinMax(seed, 4, 6) * ONE_CM,     // Bottom circle width
+    height: randomSeedMinMax(seed, 1.5, 3) * ONE_CM,  // Bottom circle height
+    tall: randomSeedMinMax(seed, 3, 5.5) * ONE_CM,    // How tall the mushroom is
+    tilt: randomSeedMinMax(seed, -5, 5) * ONE_MM,     // How much the mushroom cap is tilted right or left
+    squash: randomSeedMinMax(seed, 1, 10),            // 1 is pointy, 10 is round
+    ringMargin: randomSeedMinMax(seed, 2, 4) * ONE_MM,                           // How far the ring is from the edge of the mushroom cap
+    dots: {
+      count: randomSeedMinMax(seed, 10, 20),      // Not used yet
+      sizeMin: randomSeedMinMax(seed, 3, 7) * ONE_MM,
+      sizeMax: randomSeedMinMax(seed, 7, 10) * ONE_MM,
+    }
+  },
+  stem: {
+    tilt: randomSeedMinMax(seed, -10, 10) * ONE_MM,
+    height: randomSeedMinMax(seed, 2, 6) * ONE_CM,
+    width: randomSeedMinMax(seed, 10, 25) / 10 * ONE_CM,
+    direction: randomSeedMinMax(seed, -1, 1) >= 0 ? 1 : -1,
+    variance: randomSeedMinMax(seed, 4, 25) * ONE_MM // Vary the X axis by a random amount  
+  },
+  gills: {
+    count: randomSeedMinMax(seed, 20, 30),
+    direction: randomSeedMinMax(seed, -1, 1), // -1 = right, 0 left
+    curveAmount: randomSeedMinMax(seed, 3, 10),
+  }
+}
+if (mushroomSetting.gills.direction >= 0) mushroomSetting.gills.direction = 1; // We don't want strait gills
+
+
+function UpdateMushroomSettingsFromGuiGlobals() {
+  mushroomSetting.cap.width = cap_width;
+  mushroomSetting.cap.height = cap_height;
+  mushroomSetting.cap.tall = cap_tall;
+  mushroomSetting.cap.tilt = cap_tilt;
+  mushroomSetting.cap.squash = cap_squash;
+  mushroomSetting.cap.ringMargin = cap_ringMargin;
+  
+  mushroomSetting.stem.height = stem_height;
+  mushroomSetting.stem.width = stem_width;
+  mushroomSetting.stem.direction = stem_direction;
+  mushroomSetting.stem.variance = stem_variance;
+  mushroomSetting.gills.count = gills_count;
+  mushroomSetting.gills.direction = gills_direction;
+  mushroomSetting.gills.curveAmount = gills_curveAmount;
+}
+
+function UpdateGuiGlobalsFromSeed() {
+  cap_width = randomSeedMinMax(seed, 4, 6) * ONE_CM;     // Bottom circle width
+  cap_height = randomSeedMinMax(seed, 1.5, 3) * ONE_CM;  // Bottom circle height
+  cap_tall = randomSeedMinMax(seed, 3, 5.5) * ONE_CM;    // How tall the mushroom is
+  cap_tilt = randomSeedMinMax(seed, -5, 5) * ONE_MM;     // How much the mushroom cap is tilted right or left
+  cap_squash = randomSeedMinMax(seed, 1, 10);            // 1 is pointy, 10 is round
+  cap_ringMargin = randomSeedMinMax(seed, 2, 4) * ONE_MM;                           // How far the ring is from the edge of the mushroom cap
+  
+  stem_height = randomSeedMinMax(seed, 2, 6) * ONE_CM;
+  stem_width = randomSeedMinMax(seed, 10, 25) / 10 * ONE_CM;
+  stem_direction = randomSeedMinMax(seed, -1, 1) >= 0 ? 1 : -1;
+  stem_variance = randomSeedMinMax(seed, 4, 25) * ONE_MM; // Vary the X axis by a random amount  
+  gills_count = randomSeedMinMax(seed, 20, 30);
+  gills_direction = randomSeedMinMax(seed, -1, 1); // -1 = right, 0 left
+  gills_curveAmount = randomSeedMinMax(seed, 3, 10);
+
+  UpdateMushroomSettingsFromGuiGlobals();
+}
+
 function setup() {
   let canvas = createCanvas(global.width, global.height, SVG); // Create SVG Canvas
   p5bezier.initBezier(canvas)
-  // initBezier(canvas)
+
+  UpdateGuiGlobalsFromSeed();
+
+  // Create the GUI
+  gui = createGui('Mushroom Settings');
+
+  sliderRange(200, 920, 10);
+  gui.addGlobals('cap_width');
+
+  sliderRange(1, 10, 1);
+  gui.addGlobals('cap_squash');
+
+  sliderRange(-300, 300, 1);
+  gui.addGlobals('cap_tilt');
+
+  sliderRange(-1, 1, 1);
+  gui.addGlobals('stem_direction');
+
+  sliderRange(-300, 300, 10);
+  gui.addGlobals('stem_variance');  
+  
+  sliderRange(-1, 1, 1);
+  gui.addGlobals('gills_direction');
+
+  sliderRange(1, 50, 1);
+  gui.addGlobals('gills_count');
+
+  sliderRange(1, 20, 1);
+  gui.addGlobals('gills_curveAmount');  
+
+  sliderRange(0, 1000, 10);
+  gui.addGlobals('cap_height', 'cap_tall', 'stem_height', 'stem_width');
+
+  gui.setPosition(10, 50);
+
+  // Only call draw when then gui is changed
+  noLoop();
+
+  console.log(mushroomSetting);
 }
 
+
+
 function draw() {
+
+  console.log("Draw event triggered");
+  UpdateMushroomSettingsFromGuiGlobals();
+
+  // clear all
+  clear();
 
   // Print the seed number on the canvas
   fill(color(0, 0, 0)); // Black
   textSize(32);
   text("Seed: " + seedSetting, 10, 30);
-
-  // Debug 
-  // Print the mushroom object on the canvas
-  fill(color(0, 0, 0)); // Black
-  textSize(12);
-  text("Cap:   " + JSON.stringify(mushroomSetting.cap), 10, 50);
-  text("Gills: " + JSON.stringify(mushroomSetting.gills), 10, 62);
-  text("Stem:  " + JSON.stringify(mushroomSetting.stem), 10, 74);
-
 
   // Outline 
   // ----------------------------------------------------------
@@ -400,6 +490,7 @@ function draw() {
   mushroomObjectCopy.cap.tall += global.outlineMargin;
   mushroomObjectCopy.stem.width += global.outlineMargin;
   mushroomObjectCopy.stem.height += global.outlineMargin;
+  fill(color(255, 255, 255)); // White 
   DrawMushroomCap(global.width / 2, global.height / 2, mushroomObjectCopy, true, false);
   DrawMushroomStem3(global.width / 2, global.height / 2, mushroomSetting, global.outlineMargin, false);
 
