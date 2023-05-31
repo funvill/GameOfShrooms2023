@@ -1,4 +1,4 @@
 
 (fp_lib_table
-  (lib (name "output")(type KiCad)(uri "$(KIPRJMOD)/output.pretty")(options "")(descr ""))
+  (lib (name "generated")(type KiCad)(uri "$(KIPRJMOD)/generated.pretty")(options "")(descr ""))
 )
